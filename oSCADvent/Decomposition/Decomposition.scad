@@ -30,7 +30,7 @@ amplitude =
   decomp_trans < amp_solid ? (decomp_trans/amp_solid)*30 :
   30;
 tilestep = tilesize + tilemargin;
-sheetlen = tilesize*tile_count;
+sheetlen = tilestep*tile_count;
 sheet_sep = amplitude;
 
 function t3(w, phi=0) = sin($t*w + phi);
@@ -41,13 +41,18 @@ cf3 = function(x, y) [y/sheetlen, x/sheetlen, 0.5*(1+t3(color_rate*360))];
 module Sheet(cf) {
   for (x=[0:tilestep:sheetlen])
     for (y=[0:tilestep:sheetlen]) {
+      xc = x;
+      yc = y;
+      x=x+tilemargin/2;
+      y=y+tilemargin/2;
+
       x2 = x+tilesize;
       y2 = y+tilesize;
       t3x = t3(x_speed*360, x);
       t3y = t3(y_speed*360, y);
       t3x2 = t3(x_speed*360, x2);
       t3y2 = t3(y_speed*360, y2);
-      color(cf(x, y))
+      color(cf(xc, yc))
         hull() {
           translate([x, y, amplitude * t3x * t3y])
             cube(0.01);
@@ -83,4 +88,3 @@ rotate([0, 0, rot_speed*360*$t])
       mirror([1, 0, 0])
       ThreeSheets();
   }
-
